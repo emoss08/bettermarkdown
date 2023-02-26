@@ -44,7 +44,7 @@ class TableOfContentsAction : AnAction() {
 //        }
 
         writeAction.run {
-            Messages.showMessageDialog(project, "Table of contents generated and inserted at the top of the file", "Table of Contents", Messages.getInformationIcon())
+            Messages.showMessageDialog(project, "Table of contents generated!", "Table of Contents", Messages.getInformationIcon())
         }
     }
 }
