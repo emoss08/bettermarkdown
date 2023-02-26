@@ -11,9 +11,9 @@ class TableFormatter {
             val cellValues = row.split('|').map { it.trim() }
             println("cellValues: ${cellValues.size}")
             println("columnCount: $columnCount")
-            if (cellValues.size != columnCount) {
-                throw IllegalArgumentException("Invalid table format")
-            }
+//            if (cellValues.size != columnCount) {
+//                throw IllegalArgumentException("Invalid table format")
+//            }
             cells.add(cellValues)
             for ((i, value) in cellValues.withIndex()) {
                 columnWidths[i] = maxOf(columnWidths[i], value.length)
