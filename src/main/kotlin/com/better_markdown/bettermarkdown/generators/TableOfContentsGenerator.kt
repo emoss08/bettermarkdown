@@ -33,15 +33,15 @@ class TableOfContentsGenerator {
     }
 
     private fun generateTableOfContents(node: HeadingNode, indentation: Int = 0): String {
-        val sb = StringBuilder()
+        var sb = ""
         if (node.level > 0) {
-            sb.append(" ".repeat(indentation + node.level - 1))
-            sb.append("- [${node.text}](#${node.anchor})\n")
+            sb += " ".repeat(indentation + node.level - 1)
+            sb += "- [${node.text}](#${node.anchor})\n"
         }
         for (child in node.children) {
-            sb.append(generateTableOfContents(child, indentation + 1))
+            sb += generateTableOfContents(child, indentation + 1)
         }
-        return sb.toString()
+        return sb
     }
 
     private fun generateAnchor(text: String): String {
