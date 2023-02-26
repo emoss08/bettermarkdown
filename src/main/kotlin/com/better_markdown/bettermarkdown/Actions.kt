@@ -15,44 +15,38 @@ import com.intellij.openapi.command.WriteCommandAction
 class TableOfContentsAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
-        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-        val document = editor.document
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        val generator = TableOfContentsGenerator()
-        val markdown = document.text
-        val toc = generator.generateTableOfContents(markdown)
-        // Get the start and end offsets of the current line
-        val lineStartOffset = editor.caretModel.visualLineStart
         val notification = BetterMarkdownNotify()
-        if (!file.extension.equals("md", true)) {
-            notification.notifyWarning(project, "Table of contents can only be generated for Markdown files")
-        }
 
-        if (toc.isEmpty()) {
-            notification.notifyWarning(project, "No headings found in file")
-        }
+        if (file.extension.equals("md", true)) {
+            val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+            val document = editor.document
+            val generator = TableOfContentsGenerator()
+            val markdown = document.text
+            val toc = generator.generateTableOfContents(markdown)
 
-        // TODO: Decide whether add new line before or after the table of contents (or make it configurable)
-        val formattedToc = "\n$toc\n"
+            // Get the start and end offsets of the current line
+            val lineStartOffset = editor.caretModel.visualLineStart
 
-        val writeAction = WriteCommandAction.runWriteCommandAction(project) {
 
-            // Insert the table of contents at the start of the current line
-            document.insertString(lineStartOffset, formattedToc)
-        }
-//        val writeAction = object : WriteCommandAction.Simple<Any>(project, "Generate Table of Contents") {
-//            override fun run() {
-//                document.insertString(0, toc)
-//            }
-//        }
+            if (toc.isEmpty()) {
+                notification.notifyWarning(project, "No headings found in file")
+            }
 
-        writeAction.run {
-            Messages.showMessageDialog(
-                project,
-                "Table of contents generated!",
-                "Table of Contents",
-                Messages.getInformationIcon()
-            )
+            // TODO: Decide whether add new line before or after the table of contents (or make it configurable)
+            val formattedToc = "\n$toc\n"
+
+            val writeAction = WriteCommandAction.runWriteCommandAction(project) {
+
+                // Insert the table of contents at the start of the current line
+                document.insertString(lineStartOffset, formattedToc)
+            }
+
+            writeAction.run {
+                notification.notifyInformation(project, "Table of contents generated!")
+            }
+        } else {
+            notification.notifyError(project, "Table of contents can only be generated for Markdown files")
         }
     }
 }
