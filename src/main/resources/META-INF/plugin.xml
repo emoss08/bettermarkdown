@@ -29,5 +29,9 @@
                 class="com.better_markdown.bettermarkdown.TableOfContentsAction" text="TableOfContents Action">
             <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt P"/>
         </action>
+        <action id="com.better_markdown.bettermarkdown.FormatTableAction"
+                class="com.better_markdown.bettermarkdown.FormatTableAction" text="Markdown Table Formatter">
+            <keyboard-shortcut keymap="$default" first-keystroke="ctrl alt O"/>
+        </action>
     </actions>
 </idea-plugin>

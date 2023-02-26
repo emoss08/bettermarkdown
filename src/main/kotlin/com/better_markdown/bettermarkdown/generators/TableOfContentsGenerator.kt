@@ -14,12 +14,11 @@ class TableOfContentsGenerator {
 
     private fun parseHeadings(markdown: String): List<Heading> {
         val pattern = Regex("#+\\s+(.*)")
-        return markdown.lines()
-            .mapNotNull { line ->
-                pattern.matchEntire(line)?.groupValues?.get(1)?.let { text ->
-                    Heading(text, line.takeWhile { it == '#' }.length)
-                }
+        return markdown.lines().mapNotNull { line ->
+            pattern.matchEntire(line)?.groupValues?.get(1)?.let { text ->
+                Heading(text, line.takeWhile { it == '#' }.length)
             }
+        }
     }
 
     private fun buildHeadingTree(headings: List<Heading>) {
