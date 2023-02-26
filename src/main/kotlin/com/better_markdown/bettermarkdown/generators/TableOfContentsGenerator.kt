@@ -3,22 +3,64 @@ package com.better_markdown.bettermarkdown.generators
 import java.util.*
 
 class TableOfContentsGenerator {
+    private val root = HeadingNode(0, "", "")
+    private var currentNode = root
+
     fun generateTableOfContents(markdown: String): String {
-        val pattern = Regex("(?m)^#+\\s+(.*)\$")
-        val matches = pattern.findAll(markdown)
-        val toc = StringBuilder()
+        val headings = parseHeadings(markdown)
+        buildHeadingTree(headings)
+        return generateTableOfContents(root)
+    }
 
-        for (match in matches) {
-            val heading = match.groupValues[1]
-            val level = match.value.count { it == '#' }
-            val indent = "  ".repeat(level - 1)
-            toc.append(
-                "$indent- [$heading](#${
-                    heading.lowercase(Locale.getDefault()).replace("\\s".toRegex(), "-")
-                })\n"
-            )
+    private fun parseHeadings(markdown: String): List<Heading> {
+        val pattern = Regex("#+\\s+(.*)")
+        return markdown.lines()
+            .mapNotNull { line ->
+                pattern.matchEntire(line)?.groupValues?.get(1)?.let { text ->
+                    Heading(text, line.takeWhile { it == '#' }.length)
+                }
+            }
+    }
+
+    private fun buildHeadingTree(headings: List<Heading>) {
+        for (heading in headings) {
+            val node = HeadingNode(heading.level, heading.text, generateAnchor(heading.text))
+            while (currentNode.level >= heading.level) {
+                currentNode = currentNode.parent ?: break
+            }
+            currentNode.addChild(node)
+            currentNode = node
         }
+    }
 
-        return toc.toString()
+    private fun generateTableOfContents(node: HeadingNode, indentation: Int = 0): String {
+        val sb = StringBuilder()
+        if (node.level > 0) {
+            sb.append(" ".repeat(indentation + node.level - 1))
+            sb.append("- [${node.text}](#${node.anchor})\n")
+        }
+        for (child in node.children) {
+            sb.append(generateTableOfContents(child, indentation + 1))
+        }
+        return sb.toString()
+    }
+
+    private fun generateAnchor(text: String): String {
+        return text.lowercase(Locale.getDefault()).replace(Regex("[^a-z0-9]+"), "-")
+    }
+
+    private data class Heading(val text: String, val level: Int)
+
+    private class HeadingNode(
+        val level: Int,
+        val text: String,
+        val anchor: String,
+        val children: MutableList<HeadingNode> = mutableListOf(),
+        var parent: HeadingNode? = null
+    ) {
+        fun addChild(child: HeadingNode) {
+            children.add(child)
+            child.parent = this
+        }
     }
 }
