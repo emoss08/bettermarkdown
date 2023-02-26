@@ -13,7 +13,7 @@ class TableOfContentsGenerator {
     }
 
     private fun parseHeadings(markdown: String): List<Heading> {
-        val pattern = Regex("#+\\s+(.*)")
+        val pattern = "#+\\s+(.*)".toRegex()
         return markdown.lines().mapNotNull { line ->
             pattern.matchEntire(line)?.groupValues?.get(1)?.let { text ->
                 Heading(text, line.takeWhile { it == '#' }.length)
@@ -49,7 +49,7 @@ class TableOfContentsGenerator {
     }
 
     private fun generateAnchor(text: String): String {
-        return text.lowercase(Locale.getDefault()).replace(Regex("[^a-z0-9]+"), "-")
+        return text.lowercase(Locale.getDefault()).replace("[^a-z0-9]+".toRegex(), "-")
     }
 
     private data class Heading(val text: String, val level: Int)

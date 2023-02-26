@@ -21,8 +21,6 @@ class TableOfContentsAction : AnAction() {
 
         // Get the start and end offsets of the current line
         val lineStartOffset = editor.caretModel.visualLineStart
-        val lineEndOffset = editor.caretModel.visualLineEnd
-        val insertOffset = if (lineEndOffset > markdown.length) markdown.length else lineEndOffset
 
         if (!file.extension.equals("md", true)) {
             Messages.showMessageDialog(project, "Table of contents can only be generated for Markdown files", "Table of Contents", Messages.getWarningIcon())
