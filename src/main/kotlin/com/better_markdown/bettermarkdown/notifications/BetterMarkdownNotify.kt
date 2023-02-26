@@ -19,10 +19,10 @@ class BetterMarkdownNotify {
             .notify(project)
     }
 
-    fun notifyError(project: Project, content: String) {
+    fun notifyError(project: Project, title: String, content: String) {
         NotificationGroupManager.getInstance()
             .getNotificationGroup("Better-Markdown")
-            .createNotification(content, NotificationType.ERROR)
+            .createNotification(title, content, NotificationType.ERROR)
             .notify(project)
     }
 }

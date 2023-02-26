@@ -11,12 +11,13 @@ import com.intellij.openapi.actionSystem.CommonDataKeys
 import com.intellij.openapi.ui.Messages
 
 import com.intellij.openapi.command.WriteCommandAction
+import com.intellij.openapi.editor.Document
+import com.intellij.openapi.project.Project
 
 class TableOfContentsAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
-        val notification = BetterMarkdownNotify()
 
         if (file.extension.equals("md", true)) {
             val editor = e.getData(CommonDataKeys.EDITOR) ?: return
@@ -25,29 +26,37 @@ class TableOfContentsAction : AnAction() {
             val markdown = document.text
             val toc = generator.generateTableOfContents(markdown)
 
-            // Get the start and end offsets of the current line
+            if (toc.isEmpty()) {
+                notifyWarning(project, "No headings found in file")
+                return
+            }
+
+            val formattedToc = "\n$toc\n"
             val lineStartOffset = editor.caretModel.visualLineStart
 
-
-            if (toc.isEmpty()) {
-                notification.notifyWarning(project, "No headings found in file")
-            }
-
-            // TODO: Decide whether add new line before or after the table of contents (or make it configurable)
-            val formattedToc = "\n$toc\n"
-
-            val writeAction = WriteCommandAction.runWriteCommandAction(project) {
-
-                // Insert the table of contents at the start of the current line
-                document.insertString(lineStartOffset, formattedToc)
-            }
-
-            writeAction.run {
-                notification.notifyInformation(project, "Table of contents generated!")
-            }
+            insertToc(project, document, formattedToc, lineStartOffset)
+            notifyInformation(project, "Table of contents generated!")
         } else {
-            notification.notifyError(project, "Table of contents can only be generated for Markdown files")
+            notifyError(project, "Better Markdown", "Table of contents can only be generated for Markdown files")
         }
+    }
+
+    private fun insertToc(project: Project, document: Document, formattedToc: String, lineStartOffset: Int) {
+        WriteCommandAction.runWriteCommandAction(project) {
+            document.insertString(lineStartOffset, formattedToc)
+        }
+    }
+
+    private fun notifyWarning(project: Project, message: String) {
+        BetterMarkdownNotify().notifyWarning(project, message)
+    }
+
+    private fun notifyError(project: Project, title: String, message: String) {
+        BetterMarkdownNotify().notifyError(project, title, message)
+    }
+
+    private fun notifyInformation(project: Project, message: String) {
+        BetterMarkdownNotify().notifyInformation(project, message)
     }
 }
 
