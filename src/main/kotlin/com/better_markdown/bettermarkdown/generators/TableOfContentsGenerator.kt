@@ -8,15 +8,33 @@ class TableOfContentsGenerator {
 
     fun generateTableOfContents(markdown: String): String {
         val headings = parseHeadings(markdown)
+        if (headings.isEmpty()) return ""
+
         buildHeadingTree(headings)
         return generateTableOfContents(root)
     }
 
     private fun parseHeadings(markdown: String): List<Heading> {
         val pattern = "#+\\s+(.*)".toRegex()
+        val codeBlockPattern = """```.*""".toRegex()
+        val codeBlockEndPattern = """```\s*""".toRegex()
+        var inCodeBlock = false
         return markdown.lines().mapNotNull { line ->
-            pattern.matchEntire(line)?.groupValues?.get(1)?.let { text ->
-                Heading(text, line.takeWhile { it == '#' }.length)
+            when {
+                inCodeBlock && codeBlockEndPattern.matches(line) -> {
+                    inCodeBlock = false
+                    null
+                }
+
+                inCodeBlock -> null
+                codeBlockPattern.matches(line) -> {
+                    inCodeBlock = true
+                    null
+                }
+
+                else -> pattern.matchEntire(line)?.groupValues?.get(1)?.let { text ->
+                    Heading(text, line.takeWhile { it == '#' }.length)
+                }
             }
         }
     }

@@ -42,4 +42,42 @@ class TableOfContentsGeneratorTest {
         assertEquals(expected, result)
 
     }
+
+    @Test
+    fun `ignores code blocks`() {
+        val subject = TableOfContentsGenerator()
+
+        val input = """
+            # Heading 1
+            ## Heading 1.1
+            ### Heading 1.1.1
+            ## Heading 1.2
+            # Heading 2
+            ## Heading 2.1
+            ### Heading 2.1.1
+            #### Heading
+            # Heading 3
+            ```python
+            # This is a code block
+            ```
+            """.trimIndent()
+
+        val result = subject.generateTableOfContents(input)
+
+        val expected = """
+            - [Heading 1](#heading-1)
+                - [Heading 1.1](#heading-1-1)
+                    - [Heading 1.1.1](#heading-1-1-1)
+                - [Heading 1.2](#heading-1-2)
+            - [Heading 2](#heading-2)
+                - [Heading 2.1](#heading-2-1)
+                    - [Heading 2.1.1](#heading-2-1-1)
+                        - [Heading](#heading)
+            - [Heading 3](#heading-3)
+            
+            """.trimIndent()
+
+        assertEquals(expected, result)
+
+    }
 }

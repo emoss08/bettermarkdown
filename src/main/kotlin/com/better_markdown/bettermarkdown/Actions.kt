@@ -2,6 +2,9 @@ package com.better_markdown.bettermarkdown
 
 import com.better_markdown.bettermarkdown.formatters.TableFormatter
 import com.better_markdown.bettermarkdown.generators.TableOfContentsGenerator
+import com.better_markdown.bettermarkdown.notifications.BetterMarkdownNotify
+import com.intellij.notification.Notification
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.CommonDataKeys
@@ -18,13 +21,15 @@ class TableOfContentsAction : AnAction() {
         val generator = TableOfContentsGenerator()
         val markdown = document.text
         val toc = generator.generateTableOfContents(markdown)
-
         // Get the start and end offsets of the current line
         val lineStartOffset = editor.caretModel.visualLineStart
-
+        val notification = BetterMarkdownNotify()
         if (!file.extension.equals("md", true)) {
-            Messages.showMessageDialog(project, "Table of contents can only be generated for Markdown files", "Table of Contents", Messages.getWarningIcon())
-            return
+            notification.notifyWarning(project, "Table of contents can only be generated for Markdown files")
+        }
+
+        if (toc.isEmpty()) {
+            notification.notifyWarning(project, "No headings found in file")
         }
 
         // TODO: Decide whether add new line before or after the table of contents (or make it configurable)
@@ -42,12 +47,17 @@ class TableOfContentsAction : AnAction() {
 //        }
 
         writeAction.run {
-            Messages.showMessageDialog(project, "Table of contents generated!", "Table of Contents", Messages.getInformationIcon())
+            Messages.showMessageDialog(
+                project,
+                "Table of contents generated!",
+                "Table of Contents",
+                Messages.getInformationIcon()
+            )
         }
     }
 }
 
-class FormatTableAction: AnAction() {
+class FormatTableAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
         val project = e.project ?: return
         val editor = e.getData(CommonDataKeys.EDITOR) ?: return
@@ -55,7 +65,12 @@ class FormatTableAction: AnAction() {
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
 
         if (!file.extension.equals("md", true)) {
-            Messages.showMessageDialog(project, "Table can only be formatted for Markdown files", "Format Table", Messages.getWarningIcon())
+            Messages.showMessageDialog(
+                project,
+                "Table can only be formatted for Markdown files",
+                "Format Table",
+                Messages.getWarningIcon()
+            )
             return
         }
 
