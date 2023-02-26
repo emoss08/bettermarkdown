@@ -23,14 +23,18 @@ class TableOfContentsAction : AnAction() {
         val generator = TableOfContentsGenerator()
         val toc = generator.generateTableOfContents(document.text)
 
-        val writeAction = object : WriteCommandAction.Simple<Any>(project, "Generate Table of Contents") {
-            override fun run() {
-                document.insertString(0, toc)
-            }
+        val writeAction = WriteCommandAction.runWriteCommandAction(project) {
+            document.insertString(0, toc)
+        }
+//        val writeAction = object : WriteCommandAction.Simple<Any>(project, "Generate Table of Contents") {
+//            override fun run() {
+//                document.insertString(0, toc)
+//            }
+//        }
+
+        writeAction.run {
+            Messages.showMessageDialog(project, "Table of contents generated and inserted at the top of the file", "Table of Contents", Messages.getInformationIcon())
         }
 
-        writeAction.execute()
-
-        Messages.showMessageDialog(project, "Table of contents generated and inserted at the top of the file", "Table of Contents", Messages.getInformationIcon())
     }
 }
