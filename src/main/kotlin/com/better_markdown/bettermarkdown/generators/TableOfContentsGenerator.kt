@@ -2,7 +2,7 @@ package com.better_markdown.bettermarkdown.generators
 
 import java.util.*
 
-class TableOfContentsGenerator(private val headerRange: IntRange) {
+class TableOfContentsGenerator(private val headerRange: IntRange?) {
     private val root = HeadingNode(0, "", "")
     private var currentNode = root
 
@@ -52,9 +52,9 @@ class TableOfContentsGenerator(private val headerRange: IntRange) {
         }
     }
 
-    private fun generateTableOfContents(node: HeadingNode, indentation: Int, headerRange: IntRange): String {
+    private fun generateTableOfContents(node: HeadingNode, indentation: Int, headerRange: IntRange?): String {
         var tableOfContents = ""
-        if (node.level in headerRange) {
+        if (headerRange?.contains(node.level) == true) {
             tableOfContents += " ".repeat(indentation)
             tableOfContents += "- [${node.text}](#${node.anchor})\n"
             for (child in node.children) {

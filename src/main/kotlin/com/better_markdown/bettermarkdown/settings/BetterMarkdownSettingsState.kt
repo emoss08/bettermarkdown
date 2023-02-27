@@ -1,34 +1,31 @@
 package com.better_markdown.bettermarkdown.settings
 
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.PersistentStateComponent
-import com.intellij.openapi.components.State
-import com.intellij.openapi.components.Storage
+import com.intellij.openapi.components.*
 import com.intellij.util.xmlb.XmlSerializerUtil
 
 @State(
-    name = "com.better_markdown.bettermarkdown.SettingsState",
+    name = "com.better_markdown.bettermarkdown.settings.BetterMarkdownSettingsState",
     storages = [
         Storage("BetterMarkdown.xml")
     ]
 )
-class BetterMarkdownSettingsState : PersistentStateComponent<BetterMarkdownSettingsState.State> {
-    private var state = State(headingsRange = BetterMarkdownDefaults.DEFAULT_INT_RANGE_VALUE)
+class BetterMarkdownSettingsState : PersistentStateComponent<BetterMarkdownSettingsState> {
+    var minHeadingLevel: Int = 1
+    var maxHeadingLevel: Int = 6
 
-    data class State(
-        var headingsRange: IntRange?
-    )
+    override fun getState() = this
 
-    override fun getState(): State? = state
-
-    override fun loadState(state: State) {
+    override fun loadState(state: BetterMarkdownSettingsState) {
         XmlSerializerUtil.copyBean(state, this)
     }
 
+
     companion object {
         public val instance: BetterMarkdownSettingsState
-            get() = ApplicationManager
-                .getApplication()
-                .getService(BetterMarkdownSettingsState::class.java)
+            get() = service()
+//            get() = ApplicationManager
+//                .getApplication()
+//                .getService(BetterMarkdownSettingsState::class.java)
     }
 }

@@ -29,12 +29,12 @@ class BetterMarkdownSettingsConfigurable : SearchableConfigurable {
         val uiRange: IntRange = settingsComponent.rangeText.toIntRange() ?: return true
 
         val (uiMinLevel, uiMaxLevel) = uiRange
-        val headingsRange = state.headingsRange ?: return true
+//        val headingsRange = state.headingsRange ?: return true
 
-        val (stateMinLevel, stateMaxLevel) = headingsRange
+//        val (stateMinLevel, stateMaxLevel) = headingsRange
 
-        val minLevelChanged = uiMinLevel != stateMinLevel
-        val maxLevelChanged = uiMaxLevel != stateMaxLevel
+        val minLevelChanged = uiMinLevel != state.minHeadingLevel
+        val maxLevelChanged = uiMaxLevel != state.maxHeadingLevel
 
         return minLevelChanged || maxLevelChanged
     }
@@ -48,14 +48,17 @@ class BetterMarkdownSettingsConfigurable : SearchableConfigurable {
 
         val range: IntRange = settingsComponent.rangeText.toIntRange() ?: BetterMarkdownDefaults.DEFAULT_INT_RANGE_VALUE
 
-        state.headingsRange = range
+        val (minLevel, maxLevel) = range
+
+        state.minHeadingLevel = minLevel
+        state.maxHeadingLevel = maxLevel
     }
 
     override fun reset() {
         val state = BetterMarkdownSettingsState.instance.state ?: return
         val settingsComponent = settingsComponent ?: return
 
-        settingsComponent.setRange(state.headingsRange.toString())
+        settingsComponent.setRange("${state.minHeadingLevel}..${state.maxHeadingLevel}")
     }
 
     override fun disposeUIResources() {
