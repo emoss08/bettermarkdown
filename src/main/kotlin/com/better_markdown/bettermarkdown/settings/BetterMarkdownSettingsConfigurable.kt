@@ -23,15 +23,12 @@ class BetterMarkdownSettingsConfigurable : SearchableConfigurable {
      * If we don't have state or a settings component, return true
      */
     override fun isModified(): Boolean {
-        val state = BetterMarkdownSettingsState.instance.state ?: return true
+        val state = BetterMarkdownSettingsState.instance.state
         val settingsComponent = settingsComponent ?: return true
 
         val uiRange: IntRange = settingsComponent.rangeText.toIntRange() ?: return true
 
         val (uiMinLevel, uiMaxLevel) = uiRange
-//        val headingsRange = state.headingsRange ?: return true
-
-//        val (stateMinLevel, stateMaxLevel) = headingsRange
 
         val minLevelChanged = uiMinLevel != state.minHeadingLevel
         val maxLevelChanged = uiMaxLevel != state.maxHeadingLevel
@@ -43,7 +40,7 @@ class BetterMarkdownSettingsConfigurable : SearchableConfigurable {
      * If we don't have a settings component or a state, we don't apply anything
      */
     override fun apply() {
-        val state = BetterMarkdownSettingsState.instance.state ?: return
+        val state = BetterMarkdownSettingsState.instance.state
         val settingsComponent = settingsComponent ?: return
 
         val range: IntRange = settingsComponent.rangeText.toIntRange() ?: BetterMarkdownDefaults.DEFAULT_INT_RANGE_VALUE
@@ -55,20 +52,18 @@ class BetterMarkdownSettingsConfigurable : SearchableConfigurable {
     }
 
     override fun reset() {
-        val state = BetterMarkdownSettingsState.instance.state ?: return
+        val state = BetterMarkdownSettingsState.instance.state
         val settingsComponent = settingsComponent ?: return
 
-        settingsComponent.setRange("${state.minHeadingLevel}..${state.maxHeadingLevel}")
+        settingsComponent.setRange(state.rangeToString())
     }
 
     override fun disposeUIResources() {
         settingsComponent = null
     }
 
-    // TODO: double check
     override fun getDisplayName(): String = "BetterMarkdown Settings"
 
-    // TODO: double check
     override fun getId(): String =
         "com.better_markdown.bettermarkdown.settings.BetterMarkdownSettingsConfigurable"
 }

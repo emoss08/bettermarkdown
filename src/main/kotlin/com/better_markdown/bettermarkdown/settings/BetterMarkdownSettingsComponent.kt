@@ -35,13 +35,8 @@ class BetterMarkdownSettingsComponent : IBetterMarkdownSettingsComponent {
 
     // hello shuttle
     override fun setRange(rangeText: String) {
-        println("setRange $rangeText")
-
-        rangeText.toIntRange()?.apply {
-            // TODO: Do we want to do this???
+        rangeText.toIntRange()?.let {
             rangeField.text = rangeText
-        } ?: {
-            // Invalid
         }
     }
 
