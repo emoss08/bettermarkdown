@@ -2,10 +2,9 @@
 
 BetterMarkdown provides out-of-the-box solutions for working with markdown files in IntelliJ.
 
-- [BetterMarkdown](#bettermarkdown)
-    - [Features](#features)
-        - [Table of Contents generation](#table-of-contents-generation)
-    - [Contributing](#contributing)
+- [Features](#features)
+    - [Table of Contents generation](#table-of-contents-generation)
+- [Contributing](#contributing)
 
 
 ## Features

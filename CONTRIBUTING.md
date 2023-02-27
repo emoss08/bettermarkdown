@@ -1,7 +1,6 @@
 # Contributing to BetterMarkdown
 
-- [Contributing to BetterMarkdown](#contributing-to-bettermarkdown)
-    - [Requirements](#requirements)
+- [Requirements](#requirements)
 
 
 ## Requirements
