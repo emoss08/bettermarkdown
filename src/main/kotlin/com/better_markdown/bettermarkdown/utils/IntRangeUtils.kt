@@ -18,3 +18,7 @@ fun String.toIntRange(): IntRange? {
         null
     }
 }
+
+public operator fun IntRange.component1(): Int = this.first
+
+public operator fun IntRange.component2(): Int = this.last
