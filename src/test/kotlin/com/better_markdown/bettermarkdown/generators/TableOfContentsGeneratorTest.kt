@@ -10,7 +10,7 @@ class TableOfContentsGeneratorTest {
     @Test
     fun `produces the right output`() {
 
-        val subject = TableOfContentsGenerator()
+        val subject = TableOfContentsGenerator(1..6)
 
         val input = """
             # Heading 1
@@ -45,7 +45,7 @@ class TableOfContentsGeneratorTest {
 
     @Test
     fun `ignores code blocks`() {
-        val subject = TableOfContentsGenerator()
+        val subject = TableOfContentsGenerator(1..6)
 
         val input = """
             # Heading 1

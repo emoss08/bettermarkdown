@@ -22,7 +22,7 @@ class TableOfContentsAction : AnAction() {
         if (file.extension.equals("md", true)) {
             val editor = e.getData(CommonDataKeys.EDITOR) ?: return
             val document = editor.document
-            val generator = TableOfContentsGenerator()
+            val generator = TableOfContentsGenerator(1..6)
             val markdown = document.text
             val toc = generator.generateTableOfContents(markdown)
 

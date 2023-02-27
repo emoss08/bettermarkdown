@@ -2,7 +2,7 @@ package com.better_markdown.bettermarkdown.generators
 
 import java.util.*
 
-class TableOfContentsGenerator {
+class TableOfContentsGenerator(private val headerRange: IntRange) {
     private val root = HeadingNode(0, "", "")
     private var currentNode = root
 
@@ -11,7 +11,9 @@ class TableOfContentsGenerator {
         if (headings.isEmpty()) return ""
 
         buildHeadingTree(headings)
-        return generateTableOfContents(root)
+        return generateTableOfContents(
+            node = root, indentation = 0, headerRange = headerRange
+        )
     }
 
     private fun parseHeadings(markdown: String): List<Heading> {
@@ -50,17 +52,17 @@ class TableOfContentsGenerator {
         }
     }
 
-    private fun generateTableOfContents(node: HeadingNode, indentation: Int = 0): String {
+    private fun generateTableOfContents(node: HeadingNode, indentation: Int, headerRange: IntRange): String {
         var tableOfContents = ""
-        if (node.level > 0) {
-            tableOfContents += " ".repeat(indentation + node.level - 2)
+        if (node.level in headerRange) {
+            tableOfContents += " ".repeat(indentation)
             tableOfContents += "- [${node.text}](#${node.anchor})\n"
-        }
-        for (child in node.children) {
-            tableOfContents += if (child.level == 1) {
-                generateTableOfContents(child, 1)
-            } else {
-                generateTableOfContents(child, indentation + 3)
+            for (child in node.children) {
+                tableOfContents += generateTableOfContents(child, indentation + 4, headerRange)
+            }
+        } else {
+            for (child in node.children) {
+                tableOfContents += generateTableOfContents(child, indentation, headerRange)
             }
         }
         return tableOfContents
