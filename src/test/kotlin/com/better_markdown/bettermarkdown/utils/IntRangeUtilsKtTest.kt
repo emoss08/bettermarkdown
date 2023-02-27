@@ -10,7 +10,7 @@ internal class IntRangeUtilsKtTest {
         val result = "1..6".toIntRange()
 
         assertEquals(result!!.first, 1)
-        assertEquals(result!!.last, 6)
+        assertEquals(result.last, 6)
     }
 
     @Test
