@@ -3,6 +3,7 @@ package com.better_markdown.bettermarkdown.settings
 import com.better_markdown.bettermarkdown.utils.component1
 import com.better_markdown.bettermarkdown.utils.component2
 import com.better_markdown.bettermarkdown.utils.toIntRange
+import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.options.SearchableConfigurable
 import javax.swing.JComponent
 
@@ -49,12 +50,12 @@ class BetterMarkdownSettingsConfigurable : SearchableConfigurable {
 
             state.minHeadingLevel = minLevel
             state.maxHeadingLevel = maxLevel
-        } ?: run {
-            // TODO: Show a warning for the user
-            // Ref: https://jetbrains.design/intellij/principles/validation_errors/
-            val message = "Invalid input ${settingsComponent.rangeText}. Must be a range, e.g. 1..6"
 
-            println("Should notify: $message")
+            settingsComponent.setValidationStatus(true, null)
+        } ?: run {
+            val message = "Invalid input ${settingsComponent.rangeText}. Must be a range, e.g. 1..6"
+            settingsComponent.setValidationStatus(false, message)
+            throw ConfigurationException(message)
         }
     }
 
@@ -71,8 +72,7 @@ class BetterMarkdownSettingsConfigurable : SearchableConfigurable {
 
     override fun getDisplayName(): String = "BetterMarkdown Settings"
 
-    override fun getId(): String =
-        "com.better_markdown.bettermarkdown.settings.BetterMarkdownSettingsConfigurable"
+    override fun getId(): String = "com.better_markdown.bettermarkdown.settings.BetterMarkdownSettingsConfigurable"
 }
 
 

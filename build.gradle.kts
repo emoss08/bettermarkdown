@@ -22,6 +22,7 @@ intellij {
 }
 
 dependencies {
+    implementation("com.intellij:forms_rt:7.0.3")
     testImplementation(platform("org.junit:junit-bom:5.7.2"))
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
