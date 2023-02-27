@@ -24,9 +24,6 @@ intellij {
 dependencies {
     testImplementation(platform("org.junit:junit-bom:5.7.2"))
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.junit.jupiter:junit-jupiter")
-
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
     testImplementation("org.junit.jupiter:junit-jupiter:5.8.1")
 }
 
