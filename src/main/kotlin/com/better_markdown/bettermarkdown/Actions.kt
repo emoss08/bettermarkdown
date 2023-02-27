@@ -19,9 +19,8 @@ class TableOfContentsAction : AnAction() {
     private val settingsState: BetterMarkdownSettingsState? = BetterMarkdownSettingsState.instance
 
     override fun actionPerformed(e: AnActionEvent) {
-//        val headerRange = settingsState?.state?.headingsRange ?: BetterMarkdownDefaults.DEFAULT_INT_RANGE_VALUE
-        val maxLevel = settingsState?.state?.maxHeadingLevel ?: 6
-        val minLevel = settingsState?.state?.minHeadingLevel ?: 1
+        val maxLevel = settingsState?.state?.maxHeadingLevel ?: BetterMarkdownDefaults.DEFAULT_MAX_LEVEL
+        val minLevel = settingsState?.state?.minHeadingLevel ?: BetterMarkdownDefaults.DEFAULT_MIN_LEVEL
         val project = e.project ?: return
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
 
