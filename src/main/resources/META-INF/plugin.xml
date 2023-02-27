@@ -24,6 +24,12 @@
     <extensions defaultExtensionNs="com.intellij">
         <notificationGroup displayType="BALLOON"
                            id="Better-Markdown"/>
+        <applicationService serviceImplementation="com.better_markdown.bettermarkdown.settings.BetterMarkdownSettingsState"/>
+        <applicationConfigurable
+                parentId="tools"
+                instance="com.better_markdown.bettermarkdown.settings.BetterMarkdownSettingsConfigurable"
+                id="com.better_markdown.bettermarkdown.settings.BetterMarkdownSettingsConfigurable"
+                displayName="BetterMarkdown Settings"/>
 
     </extensions>
     <actions>
