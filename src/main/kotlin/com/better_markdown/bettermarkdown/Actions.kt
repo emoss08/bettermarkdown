@@ -19,49 +19,37 @@ class TableOfContentsAction : AnAction() {
     private val settingsState: BetterMarkdownSettingsState? = BetterMarkdownSettingsState.instance
 
     override fun actionPerformed(e: AnActionEvent) {
-        val maxLevel = settingsState?.state?.maxHeadingLevel ?: BetterMarkdownDefaults.DEFAULT_MAX_LEVEL
-        val minLevel = settingsState?.state?.minHeadingLevel ?: BetterMarkdownDefaults.DEFAULT_MIN_LEVEL
         val project = e.project ?: return
         val file = e.getData(CommonDataKeys.VIRTUAL_FILE) ?: return
 
-        if (file.extension.equals("md", true)) {
-            val editor = e.getData(CommonDataKeys.EDITOR) ?: return
-            val document = editor.document
-            val generator = TableOfContentsGenerator(minLevel..maxLevel)
-            val markdown = document.text
-            val toc = generator.generateTableOfContents(markdown)
-
-            if (toc.isEmpty()) {
-                notifyWarning(project, "No headings found in file")
-                return
-            }
-
-            val formattedToc = "\n$toc\n"
-            val lineStartOffset = editor.caretModel.visualLineStart
-
-            insertToc(project, document, formattedToc, lineStartOffset)
-            notifyInformation(project, "Table of contents generated!")
-        } else {
-            notifyError(project, "Better Markdown", "Table of contents can only be generated for Markdown files")
+        if (!file.extension.equals("md", true)) {
+            BetterMarkdownNotify.notifyError(project, "Better Markdown", "Table of contents can only be generated for Markdown files 🤦🏽")
+            return
         }
+
+        val maxLevel = settingsState?.state?.maxHeadingLevel ?: BetterMarkdownDefaults.DEFAULT_MAX_LEVEL
+        val minLevel = settingsState?.state?.minHeadingLevel ?: BetterMarkdownDefaults.DEFAULT_MIN_LEVEL
+
+        val editor = e.getData(CommonDataKeys.EDITOR) ?: return
+
+        val generatedTableOfContents = TableOfContentsGenerator(minLevel..maxLevel)
+            .generateTableOfContents(editor.document.text)
+
+        if (generatedTableOfContents.isEmpty()) {
+            BetterMarkdownNotify.notifyWarning(project, "Better Markdown", "No headings found in file 😭")
+            return
+        }
+
+        val lineStartOffset = editor.caretModel.visualLineStart
+
+        insertTableOfContents(project, editor.document, generatedTableOfContents, lineStartOffset)
+        BetterMarkdownNotify.notifyInformation(project, "Better Markdown", "🎉 Table of contents generated!")
     }
 
-    private fun insertToc(project: Project, document: Document, formattedToc: String, lineStartOffset: Int) {
+    private fun insertTableOfContents(project: Project, document: Document, formattedToc: String, lineStartOffset: Int) {
         WriteCommandAction.runWriteCommandAction(project) {
             document.insertString(lineStartOffset, formattedToc)
         }
-    }
-
-    private fun notifyWarning(project: Project, message: String) {
-        BetterMarkdownNotify().notifyWarning(project, message)
-    }
-
-    private fun notifyError(project: Project, title: String, message: String) {
-        BetterMarkdownNotify().notifyError(project, title, message)
-    }
-
-    private fun notifyInformation(project: Project, message: String) {
-        BetterMarkdownNotify().notifyInformation(project, message)
     }
 }
 

@@ -4,18 +4,18 @@ import com.intellij.notification.NotificationGroupManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
 
-class BetterMarkdownNotify {
-    fun notifyWarning(project: Project, content: String) {
+object BetterMarkdownNotify {
+    fun notifyWarning(project: Project, title: String, content: String) {
         NotificationGroupManager.getInstance()
             .getNotificationGroup("Better-Markdown")
-            .createNotification(content, NotificationType.WARNING)
+            .createNotification(title, content, NotificationType.WARNING)
             .notify(project)
     }
 
-    fun notifyInformation(project: Project, content: String) {
+    fun notifyInformation(project: Project, title: String, content: String) {
         NotificationGroupManager.getInstance()
             .getNotificationGroup("Better-Markdown")
-            .createNotification(content, NotificationType.INFORMATION)
+            .createNotification(title, content, NotificationType.INFORMATION)
             .notify(project)
     }
 
