@@ -29,7 +29,7 @@
                 parentId="tools"
                 instance="com.better_markdown.bettermarkdown.settings.BetterMarkdownSettingsConfigurable"
                 id="com.better_markdown.bettermarkdown.settings.BetterMarkdownSettingsConfigurable"
-                displayName="BetterMarkdown Settings"/>
+                displayName="BetterMarkdown"/>
 
     </extensions>
     <actions>
