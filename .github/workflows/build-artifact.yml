@@ -8,13 +8,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Build Plugin
+        run: ./gradlew buildPlugin
 
-      - run: mkdir -p build/artifact
-
-      - run: ./gradlew buildPlugin --info
-      - uses: actions/upload-artifact@v3
+      # Upload plugin artifact to make it available in the next jobs
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
         with:
-          name: bettermarkdown
-          path: build/artifact/bettermarkdown.jar
+          name: plugin-artifact
+          path: ./build/distributions/${{ steps.properties.outputs.artifact }}
