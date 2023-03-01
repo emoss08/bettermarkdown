@@ -8,26 +8,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Build Artifact
-        run: ./gradlew buildPlugin --info
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1.0.1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+
+      - run: mkdir -p build/artifact
+
+      - run: ./gradlew buildPlugin --info
+      - uses: actions/upload-artifact@v3
         with:
-          tag_name: v${{ github.run_number }}
-          release_name: Release v${{ github.run_number }}
-          body: |
-            Changes in this release:
-            - ...
-          draft: false
-          prerelease: true
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2.2.4
-        with:
-          name: my-artifact
-          path: build/libs/bettermarkdown.jar
+          name: bettermarkdown
+          path: build/artifact/bettermarkdown.jar
