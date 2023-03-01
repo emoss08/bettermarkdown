@@ -1,4 +1,4 @@
-name: Build Artifact
+name: Build and Release Artifact
 
 on:
   push:
@@ -10,12 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-      - name: Set up JDK 17
-        uses: actions/setup-java@v2
-        with:
-          java-version: 17
-          distribution: 'temurin'
+      - uses: actions/checkout@v2
       - name: Build Artifact
         run: ./gradlew buildPlugin --info
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v${{ github.run_number }}
+          release_name: Release v${{ github.run_number }}
+          body: |
+            Changes in this release:
+            - ...
+          draft: false
+          prerelease: true
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2.2.4
+        with:
+          name: my-artifact
+          path: build/libs/bettermarkdown.jar
