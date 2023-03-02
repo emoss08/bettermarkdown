@@ -26,7 +26,11 @@ jobs:
         with:
           name: bettermarkdown-plugin
           path: ./build/distributions/*.zip
-
+      - name: Download Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: bettermarkdown-plugin
+          path: build
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.0.1
