@@ -15,10 +15,8 @@ repositories {
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
     version.set("2022.1.4")
-    type.set("IC") // Target IDE Platform
-
-    plugins.set(listOf(/* Plugin Dependencies */))
-
+    pluginName.set("Better Markdown")
+    updateSinceUntilBuild.set(false)
 }
 
 dependencies {
@@ -39,8 +37,16 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("221")
+        version.set("${project.version}")
+        sinceBuild.set("211")
         untilBuild.set("231.*")
+    }
+    compileKotlin {
+        kotlinOptions.jvmTarget = "11"
+    }
+
+    compileTestKotlin {
+        kotlinOptions.jvmTarget = "11"
     }
 
     signPlugin {
