@@ -27,7 +27,7 @@ jobs:
           name: bettermarkdown-plugin
           path: ./build/distributions/*.zip
       - name: Download Artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4.1.7
         with:
           name: bettermarkdown-plugin
           path: build
